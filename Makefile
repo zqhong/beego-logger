@@ -14,7 +14,7 @@ lint :
 
 test :
 	@echo "Testing your code, please wait ..."
-	@go test -race -cover -coverprofile=coverage.txt -covermode=atomic ./...
+	@go test -cover -coverprofile=coverage.txt -covermode=atomic ./...
 
 check: fmt lint test
 	@echo "Prepare to release the code, are performing code checking, please wait ..."

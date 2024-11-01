@@ -1,4 +1,4 @@
-module github.com/beego/beego/v2
+module github.com/zqhong/beego-logger
 
 go 1.20
 
