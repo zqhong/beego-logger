@@ -329,26 +329,6 @@ func (m *LogGroupList) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func encodeFixed64Log(data []byte, offset int, v uint64) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	data[offset+4] = uint8(v >> 32)
-	data[offset+5] = uint8(v >> 40)
-	data[offset+6] = uint8(v >> 48)
-	data[offset+7] = uint8(v >> 56)
-	return offset + 8
-}
-
-func encodeFixed32Log(data []byte, offset int, v uint32) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	return offset + 4
-}
-
 func encodeVarintLog(data []byte, offset int, v uint64) int {
 	for v >= 1<<7 {
 		data[offset] = uint8(v&0x7f | 0x80)
@@ -449,10 +429,6 @@ func sovLog(x uint64) (n int) {
 		}
 	}
 	return n
-}
-
-func sozLog(x uint64) (n int) {
-	return sovLog((x << 1) ^ (x >> 63))
 }
 
 // Unmarshal unmarshals data to log
