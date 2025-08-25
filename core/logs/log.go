@@ -59,15 +59,8 @@ const levelLoggerImpl = -1
 
 // Name for adapter with beego official support
 const (
-	AdapterConsole   = "console"
-	AdapterFile      = "file"
-	AdapterMultiFile = "multifile"
-	AdapterMail      = "smtp"
-	AdapterConn      = "conn"
-	AdapterEs        = "es"
-	AdapterJianLiao  = "jianliao"
-	AdapterSlack     = "slack"
-	AdapterAliLS     = "alils"
+	AdapterConsole = "console"
+	AdapterFile    = "file"
 )
 
 // Legacy log level constants to ensure backwards compatibility.
@@ -371,7 +364,7 @@ func (bl *BeeLogger) EnableFuncCallDepth(b bool) {
 	bl.enableFuncCallDepth = b
 }
 
-// set prefix
+// SetPrefix set prefix
 func (bl *BeeLogger) SetPrefix(s string) {
 	bl.prefix = s
 }
