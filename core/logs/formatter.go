@@ -22,6 +22,17 @@ import (
 
 var formatterMap = make(map[string]LogFormatter, 4)
 
+var levelNames = [LevelDebug + 1]string{
+	"EMERGENCY",
+	"ALERT", 
+	"CRITICAL",
+	"ERROR",
+	"WARNING",
+	"NOTICE",
+	"INFORMATIONAL",
+	"DEBUG",
+}
+
 type LogFormatter interface {
 	Format(lm *LogMsg) string
 }
@@ -63,6 +74,7 @@ func GetFormatter(name string) (LogFormatter, bool) {
 
 // ToString 'w' when, 'm' msg,'f' filename，'F' full path，'n' line number
 // 'l' level number, 't' prefix of level type, 'T' full name of level type
+// 'D' fields as key=value pairs
 func (p *PatternLogFormatter) ToString(lm *LogMsg) string {
 	s := []rune(p.Pattern)
 	msg := fmt.Sprintf(lm.Msg, lm.Args...)
@@ -76,6 +88,21 @@ func (p *PatternLogFormatter) ToString(lm *LogMsg) string {
 		'F': lm.FilePath,
 	}
 	_, m['f'] = path.Split(lm.FilePath)
+	
+	// Handle fields if present
+	if lm.Fields != nil && len(lm.Fields) > 0 {
+		fieldsStr := ""
+		for k, v := range lm.Fields {
+			if fieldsStr != "" {
+				fieldsStr += " "
+			}
+			fieldsStr += fmt.Sprintf("%s=%v", k, v)
+		}
+		m['D'] = fieldsStr
+	} else {
+		m['D'] = ""
+	}
+	
 	res := ""
 	for i := 0; i < len(s)-1; i++ {
 		if s[i] == '%' {

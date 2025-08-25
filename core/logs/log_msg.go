@@ -27,6 +27,7 @@ type LogMsg struct {
 	FilePath            string
 	LineNumber          int
 	Args                []interface{}
+	Fields              map[string]interface{}
 	Prefix              string
 	enableFullFilePath  bool
 	enableFuncCallDepth bool
@@ -48,6 +49,18 @@ func (lm *LogMsg) OldStyleFormat() string {
 			_, filePath = path.Split(filePath)
 		}
 		msg = fmt.Sprintf("[%s:%d] %s", filePath, lm.LineNumber, msg)
+	}
+
+	// Add fields if present
+	if lm.Fields != nil && len(lm.Fields) > 0 {
+		fieldsStr := ""
+		for k, v := range lm.Fields {
+			if fieldsStr != "" {
+				fieldsStr += " "
+			}
+			fieldsStr += fmt.Sprintf("%s=%v", k, v)
+		}
+		msg = msg + " " + fieldsStr
 	}
 
 	msg = levelPrefix[lm.Level] + " " + msg

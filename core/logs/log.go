@@ -120,6 +120,7 @@ type BeeLogger struct {
 	flushChan           chan struct{}
 	outputs             []*nameLogger
 	globalFormatter     string
+	fields              map[string]interface{}
 }
 
 const defaultAsyncMsgLen = 1e3
@@ -298,6 +299,7 @@ func (bl *BeeLogger) writeMsg(lm *LogMsg) error {
 	lm.FilePath = file
 	lm.LineNumber = line
 	lm.Prefix = bl.prefix
+	lm.Fields = bl.fields
 
 	lm.enableFullFilePath = bl.enableFullFilePath
 	lm.enableFuncCallDepth = bl.enableFuncCallDepth
@@ -686,6 +688,21 @@ func EnableFullFilePath(b bool) {
 // Reset will remove all the adapter
 func Reset() {
 	beeLogger.Reset()
+}
+
+// WithFields returns a new BeeLogger instance with the provided fields.
+// The fields will be included in all subsequent log messages from this logger.
+func (bl *BeeLogger) WithFields(fields map[string]interface{}) *BeeLogger {
+	newLogger := *bl
+	newLogger.prefix = bl.prefix // Copy prefix
+	// Create a new outputs slice to avoid sharing the same underlying array
+	newLogger.outputs = make([]*nameLogger, len(bl.outputs))
+	copy(newLogger.outputs, bl.outputs)
+	
+	// Store fields in the logger instance
+	newLogger.fields = fields
+	
+	return &newLogger
 }
 
 // Async set the beelogger with Async mode and hold msglen messages
